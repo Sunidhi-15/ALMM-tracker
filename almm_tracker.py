@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-import pdfplumber
+import fitz  # PyMuPDF
 import os
 import datetime
 import pandas as pd
@@ -14,12 +14,12 @@ def download_pdf(url, filename):
     with open(filename, 'wb') as f:
         f.write(response.content)
 
-# Extract companies from ALMM PDF
+# Extract companies from ALMM PDF using PyMuPDF (fitz)
 def extract_companies_from_pdf(filename):
     companies = []
-    with pdfplumber.open(filename) as pdf:
-        for page in pdf.pages:
-            text = page.extract_text()
+    with fitz.open(filename) as doc:
+        for page in doc:
+            text = page.get_text()
             if text:
                 lines = text.split("\n")
                 for line in lines:
